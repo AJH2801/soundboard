@@ -13,24 +13,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final images = [
       (name: "Whar", image: "whar.jpg", sound: "placeholder.mp3"),
-      (name: "Zhongli", image: "zhongli.jpg", sound: "placeholder.mp3"),
-      (name: "Grass Block", image: "grassblock.jpg", sound: "placeholder.mp3"),
-      (name: "Popcorn", image: "popcorn.jpg", sound: "placeholder.mp3"),
-      (name: "1-Up", image: "oneup.jpg", sound: "placeholder.mp3"),
-      (
-        name: "Raiden Shogun",
-        image: "raidenshogun.jpg",
-        sound: "placeholder.mp3"
-      ),
+      (name: "Zhongli", image: "zhongli.jpg", sound: "zhongli.mp3"),
+      (name: "Amogus", image: "amogus.png", sound: "amogus.mp3"),
+      (name: "Placeholder", image: "placeholder.png", sound: "placeholder.mp3"),
+      (name: "1-Up", image: "oneup.jpg", sound: "one-up.mp3"),
+      (name: "Raiden Shogun", image: "raidenshogun.jpg", sound: "raiden.mp3"),
     ]
-        .map((e) => GestureDetector(
-            child: Image.asset("images/${e.image}"),
-            onTap: () {
+        .map((e) => Ink.image(
+            image: AssetImage("images/${e.image}"),
+            child: InkWell(onTap: () {
               print("Tapped on ${e.name}");
               final player = AudioPlayer();
               player.setAsset("sounds/${e.sound}");
               player.play();
-            }))
+            })))
         .toList();
     return GridView.count(
       crossAxisCount: 3,
