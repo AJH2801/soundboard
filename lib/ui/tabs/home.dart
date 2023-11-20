@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:soundboard/ui/tabs/new_recording.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,9 +29,20 @@ class _HomeScreenState extends State<HomeScreen> {
               player.play();
             })))
         .toList();
-    return GridView.count(
-      crossAxisCount: 3,
-      children: images,
+    return Scaffold(
+      body: GridView.count(
+        crossAxisCount: 3,
+        children: images,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: ((BuildContext context) => NewRecordingScreen())));
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
