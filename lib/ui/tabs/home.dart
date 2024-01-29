@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:soundboard/ui/tabs/new_recording.dart';
+import '../../sounds.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,14 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final images = [
-      (name: "Whar", image: "whar.jpg", sound: "placeholder.mp3"),
-      (name: "Zhongli", image: "zhongli.jpg", sound: "zhongli.mp3"),
-      (name: "Amogus", image: "amogus.png", sound: "amogus.mp3"),
-      (name: "Placeholder", image: "placeholder.png", sound: "placeholder.mp3"),
-      (name: "1-Up", image: "oneup.jpg", sound: "one-up.mp3"),
-      (name: "Raiden Shogun", image: "raidenshogun.jpg", sound: "raiden.mp3"),
-    ]
+    List<Widget> sounds = images
         .map((e) => Ink.image(
             image: AssetImage("images/${e.image}"),
             child: InkWell(onTap: () {
@@ -32,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: GridView.count(
         crossAxisCount: 3,
-        children: images,
+        children: sounds,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
