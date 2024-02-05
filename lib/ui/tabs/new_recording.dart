@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:record/record.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:http/http.dart' as http;
 
 class NewRecordingScreen extends StatefulWidget {
   @override
@@ -9,7 +12,23 @@ class NewRecordingScreen extends StatefulWidget {
 class _NewRecordingScreenState extends State<NewRecordingScreen> {
   bool recorded = false;
   bool recording = false;
+  String? path;
   final recorder = AudioRecorder();
+  final localstorage = LocalStorage("soundboard.json");
+
+  @override
+  void initState() {
+    super.initState();
+    recorder.hasPermission();
+    setupStorage();
+  }
+
+  void setupStorage() {
+    var value = localstorage.getItem('sounds');
+    if (value == null) {
+      localstorage.setItem('sounds', []);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +38,9 @@ class _NewRecordingScreenState extends State<NewRecordingScreen> {
         ElevatedButton.icon(
             icon: Icon(Icons.stop),
             label: Text("Stop"),
-            onPressed: () {
+            onPressed: () async {
+              path = await recorder.stop();
+              print(path);
               setState(() {
                 recording = false;
                 recorded = true;
@@ -30,10 +51,12 @@ class _NewRecordingScreenState extends State<NewRecordingScreen> {
       ElevatedButton recordButton = ElevatedButton.icon(
           icon: Icon(Icons.mic),
           label: Text("Record"),
-          onPressed: () {
+          onPressed: () async {
             setState(() {
               recording = true;
             });
+            await recorder.start(const RecordConfig(encoder: AudioEncoder.wav),
+                path: "test.wav");
           });
       if (recorded) {
         buttonRow = Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -41,12 +64,26 @@ class _NewRecordingScreenState extends State<NewRecordingScreen> {
           ElevatedButton.icon(
               icon: Icon(Icons.play_arrow),
               label: Text("Play"),
-              onPressed: () {}),
+              onPressed: () async {
+                var player = AudioPlayer();
+                await player.setUrl(path!);
+                print(path);
+                await player.play();
+              }),
           ElevatedButton.icon(
               icon: Icon(Icons.save),
               label: Text("Save"),
-              onPressed: () {
-                Navigator.pop(context);
+              onPressed: () async {
+                final response = await http.get(Uri.parse(path!));
+                final data =
+                    Uri.dataFromBytes(response.bodyBytes, mimeType: 'audio/wav')
+                        .toString();
+                var value = localstorage.getItem("sounds");
+                final sounds = value as List;
+                sounds.add(data);
+                localstorage.setItem("sounds", sounds);
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
               })
         ]);
       } else {
@@ -78,7 +115,7 @@ class _NewRecordingScreenState extends State<NewRecordingScreen> {
               ElevatedButton(
                 child: Text("Sumbit"),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
               ),
             ],
