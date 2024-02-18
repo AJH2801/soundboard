@@ -66,8 +66,8 @@ class _NewRecordingScreenState extends State<NewRecordingScreen> {
               label: Text("Play"),
               onPressed: () async {
                 var player = AudioPlayer();
-                await player.setUrl(path!);
                 print(path);
+                await player.setUrl(path!);
                 await player.play();
               }),
           ElevatedButton.icon(
@@ -98,12 +98,6 @@ class _NewRecordingScreenState extends State<NewRecordingScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                  width: 240.0,
-                  child: TextField(
-                    decoration: InputDecoration(border: OutlineInputBorder()),
-                  )),
-              SizedBox(height: 8.0),
               buttonRow,
               SizedBox(height: 8.0),
               SizedBox(
@@ -111,13 +105,6 @@ class _NewRecordingScreenState extends State<NewRecordingScreen> {
                   child: TextField(
                     decoration: InputDecoration(border: OutlineInputBorder()),
                   )),
-              SizedBox(height: 8.0),
-              ElevatedButton(
-                child: Text("Sumbit"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
             ],
           ),
         ));
